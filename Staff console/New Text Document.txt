@@ -1,0 +1,2 @@
+cd "C:\Users\Abdul SAMAD\Desktop\smart print"
+& "$env:LOCALAPPDATA\Programs\Python\Python311\python.exe" -m smartprint.client.staff_app
