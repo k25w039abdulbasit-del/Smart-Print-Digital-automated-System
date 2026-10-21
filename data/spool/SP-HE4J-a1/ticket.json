@@ -1,0 +1,13 @@
+{
+  "job": "fe42271e-7ddd-4b6a-9fbd-8090187b5c37",
+  "code": "SP-HE4J",
+  "printer": "Shop-Printer",
+  "copies": 1,
+  "color": "BW",
+  "duplex": false,
+  "paper": "A4",
+  "pages": [
+    1
+  ],
+  "total_sides": 1
+}

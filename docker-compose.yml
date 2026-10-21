@@ -1,0 +1,33 @@
+# One command for the server side of a shop:  docker compose up -d
+# Needs a .env next to this file with at least POSTGRES_PASSWORD, SMARTPRINT_SECRET_KEY, SMARTPRINT_WEBHOOK_SECRET.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: smartprint
+      POSTGRES_USER: smartprint
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartprint -d smartprint"]
+      interval: 5s
+      retries: 10
+
+  server:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      SMARTPRINT_DATABASE_URL: postgresql+psycopg://smartprint:${POSTGRES_PASSWORD}@db:5432/smartprint
+      SMARTPRINT_SECRET_KEY: ${SMARTPRINT_SECRET_KEY:?set SMARTPRINT_SECRET_KEY}
+      SMARTPRINT_WEBHOOK_SECRET: ${SMARTPRINT_WEBHOOK_SECRET:?set SMARTPRINT_WEBHOOK_SECRET}
+      SMARTPRINT_PRINTER_BACKEND: ${SMARTPRINT_PRINTER_BACKEND:-spool}
+      SMARTPRINT_DEFAULT_PRINTER: ${SMARTPRINT_DEFAULT_PRINTER:-Shop-Printer}
+    volumes: [appdata:/data]
+    ports: ["8000:8000"]      # put a TLS reverse proxy (Caddy/nginx) in front on the LAN - see docs/OPERATIONS.md
+
+volumes:
+  pgdata:
+  appdata:

@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smartprint"
+version = "1.0.0"
+description = "SmartPrint - Smart Digital Printing & Shop Automation"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.6",
+  "pydantic-settings>=2.2",
+  "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+server = [
+  "fastapi>=0.110",
+  "uvicorn>=0.29",
+  "sqlalchemy>=2.0",
+  "alembic>=1.13",
+  "psycopg[binary]>=3.1",
+  "python-multipart>=0.0.9",
+  "pypdf>=4.0",
+  "pypdfium2>=4.30",
+  "reportlab>=4.0",
+  "pillow>=10",
+]
+client = ["PySide6>=6.6", "segno>=1.6"]
+dev = ["pytest>=8", "pyinstaller>=6"]
+
+[project.scripts]
+smartprint-server = "smartprint.server.cli:main"
+smartprint-kiosk = "smartprint.client.kiosk_app:main"
+smartprint-staff = "smartprint.client.staff_app:main"
+smartprint-demo = "smartprint.demo:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
